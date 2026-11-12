@@ -1,10 +1,12 @@
 
 import {test, expect} from '@playwright/test';
 
-test('admin can save an employee', async({page})=>{
-    await page.goto('https://localhost/home');
-    await page.getByLabel('Work Email').fill('john@gmail.com');
-    await page.getByRole('button', {name: 'Save Employee'}).click();
-    await expect(page.getByText('Employee saved successfully')).toBeVisible();
-    await expect(page.get);
+test('cancel an employee deletion', async({page})=>{
+    const modal=page.getByRole('dialog', {name:'Delete Employee'});
+    await page.getByRole('button', {name:'Delete Employee'}).click();
+    await expect(modal).toBeVisible();
+    await expect(modal).toHaveText('Are you sure you want to delete Ali Khan?');
+    await modal.getByRole('button', {name:'Cancel'}).click();
+    await expect(modal).toBeHidden();
+    await expect(page.getByText('Ali Khan')).toBeVisible();
 });
