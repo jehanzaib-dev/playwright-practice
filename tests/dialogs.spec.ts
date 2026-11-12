@@ -11,4 +11,5 @@ test('Intentional Failure: Registering dialog listener AFTER the click', async (
   page.on('dialog', async dialog => {
     await dialog.accept();
   });
-});
+}
+);
