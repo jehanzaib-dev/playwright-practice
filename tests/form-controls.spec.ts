@@ -1,28 +1,33 @@
+import { test, expect } from '@playwright/test';
 
-import {test, expect} from '@playwright/test';
+test.describe('Checkout Preferences Form', () => {
 
-test('interact with form controls', async ({page}) => {
-    await page.goto('https://testpages.eviltester.com/pages/forms/html-form/');
-    
-    const dropdown = page.locator('select[name="dropdown"]');
-    await dropdown.selectOption('Drop Down Item 2');
-    await expect(dropdown).toHaveValue('dd2');
+  test('Should configure native dropdown and radio selection', async ({ page }) => {
+    await page.goto('https://the-internet.herokuapp.com/dropdown'); // Or your target sandbox form URL
 
-    const checkbox1= page.locator('input[name="checkboxes[]"][value="cb1"]');
-    const checkbox2= page.locator('input[name="checkboxes[]"][value="cb2"]');
-    const checkbox3= page.locator('input[name="checkboxes[]"][value="cb3"]');
-    await checkbox1.check();
-    await checkbox2.check();
-    await checkbox3.uncheck
-    await expect(checkbox1).toBeChecked();
-    await expect(checkbox2).toBeChecked();
-    await expect(checkbox3).not.toBeChecked();
+    // 1. Native Dropdown: Select country by its visible text label
+    const dropdown = page.getByLabel('Dropdown List');
+    await dropdown.selectOption({ label: 'Option 2' });
+    await expect(dropdown).toHaveValue('2');
 
-    const radio1 = page.locator('input[name="radioval"][value="rd1"]');
-    const radio3= page.locator('input[name=radioval"][value="rd3"]');
-    await radio1.check();
-    await expect(radio1).toBeChecked();
-    await radio3.check();
-    await expect(radio3).toBeChecked();
-    await expect(radio1).not.toBeChecked();
+    // 2. Radio Button: Choose shipping speed (Exclusive choice)
+    const expressRadio = page.getByRole('radio', { name: 'Express Shipping' });
+    await expressRadio.check();
+    await expect(expressRadio).toBeChecked();
+  });
+
+  test('Should handle checkbox check and uncheck workflows distinctly', async ({ page }) => {
+    await page.goto('https://qaplayground.dev/');
+
+    // 3. Checkbox: Opt-in scenario
+    const newsletterCheckbox = page.getByRole('checkbox', { name: 'Subscribe to newsletter' });
+    await newsletterCheckbox.check();
+    await expect(newsletterCheckbox).toBeChecked();
+
+    // 4. Checkbox: Opt-out scenario (Separate test block for alternate path)
+    const termsCheckbox = page.getByRole('checkbox', { name: 'Receive promotional SMS' });
+    await termsCheckbox.uncheck();
+    await expect(termsCheckbox).not.toBeChecked();
+  });
+
 });
