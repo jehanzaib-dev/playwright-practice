@@ -2,32 +2,36 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Checkout Preferences Form', () => {
 
-  test('Should configure native dropdown and radio selection', async ({ page }) => {
-    await page.goto('https://the-internet.herokuapp.com/dropdown'); // Or your target sandbox form URL
+  test('Should configure dropdown', async ({ page }) => {
 
-    // 1. Native Dropdown: Select country by its visible text label
-    const dropdown = page.getByLabel('Dropdown List');
-    await dropdown.selectOption({ label: 'Option 2' });
-    await expect(dropdown).toHaveValue('2');
+    await page.goto('https://testpages.eviltester.com/pages/forms/html-form/');
 
-    // 2. Radio Button: Choose shipping speed (Exclusive choice)
-    const expressRadio = page.getByRole('radio', { name: 'Express Shipping' });
-    await expressRadio.check();
-    await expect(expressRadio).toBeChecked();
+    const dropdown = page.getByRole('combobox');
+
+    await expect(dropdown).toHaveCount(1);
+
+    await dropdown.selectOption('dd1');
+
+    await expect(dropdown).toHaveValue('dd1');
   });
 
-  test('Should handle checkbox check and uncheck workflows distinctly', async ({ page }) => {
-    await page.goto('https://qaplayground.dev/');
+  test('Should configure checkbox', async ({ page }) => {
+    await page.goto('https://testpages.eviltester.com/pages/forms/html-form/');
 
-    // 3. Checkbox: Opt-in scenario
-    const newsletterCheckbox = page.getByRole('checkbox', { name: 'Subscribe to newsletter' });
-    await newsletterCheckbox.check();
-    await expect(newsletterCheckbox).toBeChecked();
-
-    // 4. Checkbox: Opt-out scenario (Separate test block for alternate path)
-    const termsCheckbox = page.getByRole('checkbox', { name: 'Receive promotional SMS' });
-    await termsCheckbox.uncheck();
-    await expect(termsCheckbox).not.toBeChecked();
+    const checkbox = page.getByRole('checkbox');
+    await checkbox.nth(0).check();
+    await checkbox.nth(1).check();
+    await expect(checkbox.nth(0)).toBeChecked();
+    await expect(checkbox.nth(1)).toBeChecked();
   });
+
+  test('Should configure radio button', async ({ page }) => {
+    await page.goto('https://testpages.eviltester.com/pages/forms/html-form/');
+
+    const radioButton = page.getByRole('radio');
+    await radioButton.nth(2).check();
+    await expect(radioButton.nth(2)).toBeChecked();
+  });
+
 
 });
